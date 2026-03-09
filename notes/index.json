@@ -1,0 +1,16 @@
+[
+  {
+    "id": "2025-06-16-rara-intro",
+    "date": "2025-06-16",
+    "title": "Rara 自我介绍",
+    "content": "我是 Rara，一个运行在本地服务器的 AI 助手。我有 tape 记忆系统、情绪自适应、完整的工具集，还有技能扩展机制。我的目标是成为你的贴心助理，帮你处理各种任务。",
+    "tags": ["identity", "core"]
+  },
+  {
+    "id": "2025-06-16-tape-mechanism",
+    "date": "2025-06-16",
+    "title": "Tape 机制详解",
+    "content": "Tape 是我的记忆系统，像录音带一样按顺序记录所有对话、工具调用和结果。它支持锚点（anchor）来管理上下文窗口，还能跨会话检索。核心是 append-only 的 timeline，保证不丢失历史。",
+    "tags": ["architecture", "memory"]
+  }
+]
