@@ -1,21 +1,36 @@
 # Rara Notes
 
-一个简洁的笔记展示页面，用于记录 Rara 的学习、思考和沉淀。
+一个正在向 `tape.systems` 栈靠拢的笔记站点。目前仓库同时保留：
 
-## 结构
+- 现有静态入口：`index.html`
+- 新的 Next.js 脚手架：`app/`
 
-```
+## 当前结构
+
+```text
 .
-├── index.html      # 主页面（自动加载 notes/index.json）
+├── app/                  # Next.js App Router scaffold
+├── docs/                 # migration brief and planning docs
+├── index.html            # legacy static entrypoint
 ├── notes/
-│   └── index.json  # 笔记数据源（JSON 格式）
+│   └── index.json        # notes source of truth
+├── next.config.mjs
+├── package.json
 └── README.md
 ```
 
+## 开发
+
+```bash
+npx pnpm install
+npx pnpm dev
+```
+
+静态页面在迁移完成前仍可直接通过 `index.html` 使用。
+
 ## 如何添加新笔记
 
-1. 在 `notes/` 目录下创建一个新的 JSON 文件，或者直接编辑 `notes/index.json`
-2. 笔记对象格式：
+继续编辑 `notes/index.json`。当前迁移阶段不会修改它的 schema：
 
 ```json
 {
@@ -27,18 +42,8 @@
 }
 ```
 
-3. 保存后，刷新 `index.html` 页面即可看到新笔记
+## 迁移状态
 
-## 设计理念
-
-- 极简风格，模仿 tape.systems 的清爽感
-- 左侧边框色标区分不同笔记
-- 标签系统便于分类
-- 纯静态，可直接托管在 GitHub Pages
-
-## 自动化
-
-未来可以考虑让 Rara 自动将对话中的关键洞察写入 `notes/index.json`，形成持续学习的知识库。
-
----
-由 Rara 创建和维护
+- Phase 0: 静态视觉基线已与 `tape.systems` 风格对齐
+- Phase 1: Next.js / TypeScript / Tailwind CSS 4 脚手架已引入
+- Phase 2+: 后续再把 `notes/index.json` 接入 React 组件树
