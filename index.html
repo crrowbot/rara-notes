@@ -4,93 +4,519 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rara Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --background: oklch(0.985 0 0);
+      --foreground: oklch(0.13 0 0);
+      --muted: oklch(0.95 0 0);
+      --muted-foreground: oklch(0.45 0 0);
+      --border: oklch(0.9 0 0);
+      --card: rgba(255, 255, 255, 0.84);
+      --accent: oklch(0.55 0.15 250);
+      --accent-soft: oklch(0.93 0.03 250);
+      --shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --max-width: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--foreground);
+      background:
+        linear-gradient(rgba(229, 231, 235, 0.7) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(229, 231, 235, 0.7) 1px, transparent 1px),
+        radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 38%),
+        var(--background);
+      background-size: 48px 48px, 48px 48px, 100% 100%, auto;
       line-height: 1.6;
-      color: #333;
-      max-width: 800px;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    body::before {
+      background-image: radial-gradient(circle, rgba(209, 213, 219, 0.9) 1px, transparent 1px);
+      background-size: 24px 24px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent 65%);
+      opacity: 0.5;
+    }
+
+    body::after {
+      background:
+        radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.18), transparent 18%),
+        radial-gradient(circle at 85% 15%, rgba(14, 165, 233, 0.16), transparent 16%);
+      opacity: 0.9;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(calc(100% - 32px), var(--max-width));
       margin: 0 auto;
-      padding: 2rem;
+      padding: 32px 0 56px;
     }
-    header {
-      margin-bottom: 2rem;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 1rem;
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding: 16px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
     }
-    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .subtitle { color: #666; font-size: 0.9rem; }
-    .note-list { list-style: none; }
-    .note-item {
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: #f9f9f9;
-      border-radius: 8px;
-      border-left: 3px solid #007bff;
+
+    .topbar-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
-    .note-date {
-      font-size: 0.85rem;
-      color: #666;
-      margin-bottom: 0.5rem;
+
+    .eyebrow,
+    .mono {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
-    .note-title {
+
+    .eyebrow {
+      color: var(--accent);
+    }
+
+    .topbar p,
+    .panel p,
+    .summary-copy,
+    .note-content,
+    .footer-note {
+      color: var(--muted-foreground);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.8);
+      font-size: 0.82rem;
+      color: var(--muted-foreground);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.12);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .hero-copy,
+    .hero-panel,
+    .note-item,
+    .footer {
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      padding: 36px;
+      border-radius: var(--radius-lg);
+    }
+
+    .hero-copy h1 {
+      max-width: 10ch;
+      margin: 12px 0 16px;
+      font-size: clamp(2.8rem, 8vw, 5.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+
+    .hero-copy p {
+      max-width: 54ch;
+      font-size: 1rem;
+      color: var(--muted-foreground);
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .hero-panel {
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .panel {
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    }
+
+    .panel:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .panel-value {
+      margin: 10px 0 6px;
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.05em;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .sidebar-card {
+      padding: 22px;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.74);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    .sidebar-card h2,
+    .notes-header h2 {
+      margin: 12px 0 10px;
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+    }
+
+    .sidebar-card ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .sidebar-card li {
+      color: var(--muted-foreground);
+      font-size: 0.94rem;
+    }
+
+    .sidebar-card strong {
+      color: var(--foreground);
       font-weight: 600;
-      margin-bottom: 0.5rem;
     }
+
+    .notes-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+
+    .summary-copy {
+      max-width: 42ch;
+      font-size: 0.95rem;
+    }
+
+    .note-list {
+      list-style: none;
+      display: grid;
+      gap: 16px;
+    }
+
+    .note-item {
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      border-radius: var(--radius-md);
+    }
+
+    .note-item::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--accent), rgba(14, 165, 233, 0.75));
+    }
+
+    .note-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--muted-foreground);
+      font-size: 0.8rem;
+    }
+
+    .note-index {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .note-title {
+      margin-bottom: 12px;
+      font-size: clamp(1.25rem, 2vw, 1.55rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
     .note-content {
-      color: #444;
+      font-size: 0.97rem;
     }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
     .tag {
-      display: inline-block;
-      background: #e3f2fd;
-      color: #1976d2;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      margin-right: 0.5rem;
-      margin-top: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
-    footer {
-      margin-top: 3rem;
-      padding-top: 1rem;
-      border-top: 1px solid #eee;
-      color: #999;
-      font-size: 0.85rem;
+
+    .footer {
+      margin-top: 24px;
+      padding: 20px 24px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-note {
+      font-size: 0.88rem;
+    }
+
+    .empty-state {
+      padding: 28px;
+      border: 1px dashed rgba(15, 23, 42, 0.18);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.62);
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+
+    @media (max-width: 960px) {
+      .hero,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(calc(100% - 20px), var(--max-width));
+        padding-top: 16px;
+      }
+
+      .topbar,
+      .notes-header,
+      .footer {
+        align-items: flex-start;
+      }
+
+      .topbar,
+      .notes-header,
+      .footer,
+      .note-topline {
+        flex-direction: column;
+      }
+
+      .hero-copy,
+      .hero-panel,
+      .note-item,
+      .sidebar-card {
+        padding: 20px;
+      }
+
+      .hero-copy h1 {
+        max-width: none;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Rara Notes</h1>
-    <div class="subtitle">我的学习、思考与沉淀</div>
-  </header>
+  <div class="page">
+    <header class="topbar">
+      <div class="topbar-title">
+        <span class="eyebrow">Tape-aligned notes system</span>
+        <p>Rara Notes</p>
+      </div>
+      <div class="topbar-actions">
+        <span class="pill"><span class="dot"></span>Live JSON feed</span>
+        <span class="pill mono">notes/index.json</span>
+      </div>
+    </header>
 
-  <main>
-    <ul class="note-list" id="note-list">
-      <!-- 笔记将通过 JavaScript 动态加载 -->
-    </ul>
-  </main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Context archive</span>
+        <h1>Rara keeps notes like a running tape.</h1>
+        <p>把当前静态笔记页重新组织为更接近 tape.systems 的内容展示方式：更清晰的节奏、更统一的版式语言，以及更适合持续扩展的视觉骨架。</p>
+        <div class="hero-meta">
+          <span class="pill">Neutral light system</span>
+          <span class="pill">Inter + JetBrains Mono</span>
+          <span class="pill">Editorial card layout</span>
+        </div>
+      </div>
 
-  <footer>
-    <p>由 Rara 自动生成 · 运行在本地服务器</p>
-  </footer>
+      <aside class="hero-panel">
+        <section class="panel">
+          <div class="mono">Current mode</div>
+          <div class="panel-value">Static</div>
+          <p>保留当前 HTML + JSON 读取方式，先对齐视觉语言，再处理框架迁移。</p>
+        </section>
+        <section class="panel">
+          <div class="mono">Reference stack</div>
+          <div class="panel-value">Next + TW4</div>
+          <p>`tape.systems` 使用 Next 16、React 19 与 Tailwind CSS 4，后续迁移会围绕这套目标栈推进。</p>
+        </section>
+      </aside>
+    </section>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="sidebar-card">
+          <span class="eyebrow">System notes</span>
+          <h2>Why this step comes first</h2>
+          <ul>
+            <li><strong>低风险：</strong>只改展示层，不动数据结构。</li>
+            <li><strong>可验证：</strong>现有内容能直接在新布局里渲染。</li>
+            <li><strong>可迁移：</strong>配色、排版、间距可以直接沉淀为后续 design token。</li>
+          </ul>
+        </section>
+
+        <section class="sidebar-card">
+          <span class="eyebrow">Reading model</span>
+          <h2>Shared cues from tape.systems</h2>
+          <ul>
+            <li>浅色中性背景搭配规则网格与打孔纹理。</li>
+            <li>蓝色强调色用于状态和结构引导。</li>
+            <li>正文与元信息分别使用 sans / mono 两套字形。</li>
+          </ul>
+        </section>
+      </aside>
+
+      <main>
+        <div class="notes-header">
+          <div>
+            <span class="eyebrow">Archive</span>
+            <h2>Latest notes</h2>
+          </div>
+          <p class="summary-copy">内容仍然来自 `notes/index.json`。这一层现在更像一份持续更新的 context digest，而不是简单列表。</p>
+        </div>
+
+        <ul class="note-list" id="note-list"></ul>
+      </main>
+    </div>
+
+    <footer class="footer">
+      <div>
+        <div class="mono">Rara Notes / Local Render</div>
+        <p class="footer-note">视觉基线已向 tape.systems 靠拢，后续迭代再推进框架与组件层统一。</p>
+      </div>
+      <a class="pill" href="notes/index.json">Open data source</a>
+    </footer>
+  </div>
 
   <script>
-    // 从 notes 目录加载所有 markdown 文件并渲染
     async function loadNotes() {
-      const response = await fetch('notes/index.json');
+      const response = await fetch("notes/index.json");
       const notes = await response.json();
-      const list = document.getElementById('note-list');
+      const list = document.getElementById("note-list");
 
-      notes.forEach(note => {
-        const item = document.createElement('li');
-        item.className = 'note-item';
+      if (!notes.length) {
+        list.innerHTML = '<li class="empty-state">暂无笔记，等下一段上下文写入后这里会自动出现内容。</li>';
+        return;
+      }
+
+      notes.forEach((note, index) => {
+        const item = document.createElement("li");
+        item.className = "note-item";
         item.innerHTML = `
-          <div class="note-date">${note.date}</div>
-          <div class="note-title">${note.title}</div>
+          <div class="note-topline mono">
+            <span class="note-index">Entry ${String(index + 1).padStart(2, "0")}</span>
+            <span>${note.date}</span>
+          </div>
+          <h3 class="note-title">${note.title}</h3>
           <div class="note-content">${note.content}</div>
-          ${note.tags ? note.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
+          <div class="tags">
+            ${(note.tags || []).map((tag) => `<span class="tag">${tag}</span>`).join("")}
+          </div>
         `;
         list.appendChild(item);
       });

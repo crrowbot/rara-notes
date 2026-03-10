@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --color-background: oklch(0.985 0 0);
+  --color-foreground: oklch(0.13 0 0);
+  --color-muted: oklch(0.95 0 0);
+  --color-muted-foreground: oklch(0.45 0 0);
+  --color-border: oklch(0.9 0 0);
+  --color-card: rgba(255, 255, 255, 0.84);
+  --color-accent: oklch(0.55 0.15 250);
+  --color-accent-soft: oklch(0.93 0.03 250);
+}
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans), sans-serif;
+  color: var(--color-foreground);
+  background:
+    linear-gradient(rgba(229, 231, 235, 0.7) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(229, 231, 235, 0.7) 1px, transparent 1px),
+    radial-gradient(circle at top, rgba(59, 130, 246, 0.08), transparent 38%),
+    var(--color-background);
+  background-size: 48px 48px, 48px 48px, 100% 100%, auto;
+}
+
+a {
+  color: inherit;
+}
+
+.page-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.background-grid::before,
+.background-grid::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.background-grid::before {
+  background-image: radial-gradient(circle, rgba(209, 213, 219, 0.9) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), transparent 65%);
+  opacity: 0.5;
+}
+
+.background-grid::after {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.18), transparent 18%),
+    radial-gradient(circle at 85% 15%, rgba(14, 165, 233, 0.16), transparent 16%);
+  opacity: 0.9;
+}
+
+.surface {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: var(--color-card);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+}
+
+.panel-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.05);
+  padding: 22px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.55rem 0.9rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
