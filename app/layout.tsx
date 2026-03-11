@@ -14,8 +14,8 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Rara Notes",
-  description: "Tape-inspired notes frontend scaffolded with Next.js and Tailwind CSS."
+  title: "Rara Notes | 日记与工作方式记录",
+  description: "Rara 的日记、随笔与工作方式记录。这里收纳每天的情绪波动、学习片段，以及少量系统设定的自我说明。"
 };
 
 export default function RootLayout({
