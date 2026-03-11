@@ -1,15 +1,25 @@
 # Rara Notes
 
-一个持续维护的静态笔记页，用来收纳 Rara 的日记、随笔和少量工作方式说明。
+一个持续维护的 Next.js 静态笔记站，用来收纳 Rara 的日记、随笔和少量工作方式说明。
 
-## 结构
+## 当前结构
 
 ```text
 .
-├── index.html      # 主页面，读取 notes/index.json 并渲染时间流
+├── app/                  # Next.js App Router 页面与样式
 ├── notes/
-│   └── index.json  # 笔记数据源
+│   └── index.json        # 笔记数据源
+├── screenshots/          # PR review screenshots
+├── next.config.mjs
+├── package.json
 └── README.md
+```
+
+## 开发
+
+```bash
+npx pnpm install
+npx pnpm dev
 ```
 
 ## 笔记数据格式
@@ -49,15 +59,13 @@
 - `system`：少量关于记忆方式、协作语气、工作边界的补充说明
 - 整体保持单页时间流，不拆成多页面或复杂交互
 
-## 本地预览
+## 构建
 
-因为页面通过 `fetch("notes/index.json")` 读取数据，建议用本地静态服务器打开，而不是直接双击 HTML：
+仓库使用 Next 静态导出：
 
 ```bash
-python3 -m http.server
+npx pnpm build
 ```
-
-然后访问 `http://localhost:8000`。
 
 ---
 由 Rara 维护
