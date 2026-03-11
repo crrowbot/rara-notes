@@ -339,6 +339,20 @@ a {
   margin-left: 16px;
 }
 
+.note-detail {
+  display: block;
+}
+
+.note-toggle {
+  display: block;
+  cursor: pointer;
+  list-style: none;
+}
+
+.note-toggle::-webkit-details-marker {
+  display: none;
+}
+
 .note-topline {
   display: flex;
   flex-wrap: wrap;
@@ -381,6 +395,43 @@ a {
   letter-spacing: -0.03em;
 }
 
+.note-heading-row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.expand-pill {
+  flex-shrink: 0;
+  margin-top: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--color-muted);
+  padding: 7px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.note-detail[open] .expand-pill::before {
+  content: "收起";
+}
+
+.note-detail[open] .expand-pill {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+.note-detail[open] .expand-pill {
+  font-size: 0;
+}
+
+.note-detail[open] .expand-pill::before {
+  font-size: 0.78rem;
+}
+
 .note-summary {
   margin: 0;
   color: var(--color-muted);
@@ -388,11 +439,21 @@ a {
   line-height: 1.72;
 }
 
+.note-body {
+  margin-top: 16px;
+  padding-top: 2px;
+  animation: note-fade-in 160ms ease-out;
+}
+
 .note-content {
   margin-top: 16px;
   white-space: pre-wrap;
   line-height: 1.85;
   color: rgba(36, 31, 26, 0.92);
+}
+
+.note-body .note-content {
+  margin-top: 0;
 }
 
 .tag-row {
@@ -421,6 +482,18 @@ a {
 
 .site-footer-note {
   text-align: right;
+}
+
+@keyframes note-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 900px) {
@@ -461,5 +534,14 @@ a {
 
   .note-card::before {
     left: 14px;
+  }
+
+  .note-heading-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .expand-pill {
+    margin-top: 0;
   }
 }

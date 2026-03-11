@@ -145,32 +145,67 @@ export default function HomePage() {
           <ul className="note-list">
             {orderedNotes.map((note) => {
               const type = note.type ?? "diary";
+              const summary = fallbackSummary(note);
 
               return (
                 <li key={note.id} className={`note-card ${type === "system" ? "note-system" : "note-diary"}`}>
-                  <article className="note-inner">
-                    <div className="note-topline">
-                      <span className={`type-pill ${type === "system" ? "type-system" : ""}`}>
-                        {typeLabel(type)}
-                      </span>
-                      {note.mood ? <span className="mood-pill">{note.mood}</span> : null}
-                      <time>{formatDate(note.date)}</time>
-                    </div>
+                  {type === "diary" ? (
+                    <details className="note-detail">
+                      <summary className="note-toggle">
+                        <article className="note-inner">
+                          <div className="note-topline">
+                            <span className="type-pill">{typeLabel(type)}</span>
+                            {note.mood ? <span className="mood-pill">{note.mood}</span> : null}
+                            <time>{formatDate(note.date)}</time>
+                          </div>
 
-                    <h3 className="note-title">{note.title}</h3>
-                    <p className="note-summary">{fallbackSummary(note)}</p>
-                    <div className="note-content">{note.content}</div>
+                          <div className="note-heading-row">
+                            <h3 className="note-title">{note.title}</h3>
+                            <span className="expand-pill" aria-hidden="true">
+                              展开
+                            </span>
+                          </div>
+                          <p className="note-summary">{summary}</p>
+                        </article>
+                      </summary>
 
-                    {note.tags?.length ? (
-                      <div className="tag-row">
-                        {note.tags.map((tag) => (
-                          <span key={tag} className="tag-pill">
-                            {tag}
-                          </span>
-                        ))}
+                      <div className="note-body note-inner">
+                        <div className="note-content">{note.content}</div>
+
+                        {note.tags?.length ? (
+                          <div className="tag-row">
+                            {note.tags.map((tag) => (
+                              <span key={tag} className="tag-pill">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
-                    ) : null}
-                  </article>
+                    </details>
+                  ) : (
+                    <article className="note-inner">
+                      <div className="note-topline">
+                        <span className="type-pill type-system">{typeLabel(type)}</span>
+                        {note.mood ? <span className="mood-pill">{note.mood}</span> : null}
+                        <time>{formatDate(note.date)}</time>
+                      </div>
+
+                      <h3 className="note-title">{note.title}</h3>
+                      <p className="note-summary">{summary}</p>
+                      <div className="note-content">{note.content}</div>
+
+                      {note.tags?.length ? (
+                        <div className="tag-row">
+                          {note.tags.map((tag) => (
+                            <span key={tag} className="tag-pill">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </article>
+                  )}
                 </li>
               );
             })}
