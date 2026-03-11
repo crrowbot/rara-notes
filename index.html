@@ -3,97 +3,724 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rara Notes</title>
+  <title>Rara Notes | 日记与工作方式记录</title>
+  <meta
+    name="description"
+    content="Rara 的日记、随笔与工作方式记录。这里收纳每天的情绪波动、学习片段，以及少量系统设定的自我说明。"
+  >
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f3efe6;
+      --bg-elevated: rgba(255, 252, 245, 0.8);
+      --paper: #fffdf8;
+      --paper-strong: #fffaf1;
+      --ink: #241f1a;
+      --muted: #6e6256;
+      --line: rgba(57, 43, 30, 0.12);
+      --line-strong: rgba(57, 43, 30, 0.22);
+      --accent: #9b5f3d;
+      --accent-soft: rgba(155, 95, 61, 0.12);
+      --diary: #bf6f45;
+      --system: #48687c;
+      --glow: rgba(255, 255, 255, 0.62);
+      --shadow: 0 24px 60px rgba(74, 55, 35, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --content-width: 1100px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 800px;
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(201, 153, 122, 0.14), transparent 28%),
+        radial-gradient(circle at top right, rgba(91, 130, 149, 0.12), transparent 24%),
+        linear-gradient(180deg, #f8f4eb 0%, var(--bg) 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(91, 73, 56, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91, 73, 56, 0.03) 1px, transparent 1px);
+      background-size: 28px 28px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 92%);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      width: min(calc(100% - 32px), var(--content-width));
       margin: 0 auto;
-      padding: 2rem;
+      padding: 24px 0 64px;
     }
-    header {
-      margin-bottom: 2rem;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 1rem;
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 0 24px;
+      color: var(--muted);
+      font-size: 0.95rem;
     }
-    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .subtitle { color: #666; font-size: 0.9rem; }
-    .note-list { list-style: none; }
-    .note-item {
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: #f9f9f9;
-      border-radius: 8px;
-      border-left: 3px solid #007bff;
-    }
-    .note-date {
-      font-size: 0.85rem;
-      color: #666;
-      margin-bottom: 0.5rem;
-    }
-    .note-title {
+
+    .site-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
-    .note-content {
-      color: #444;
+
+    .site-mark::before {
+      content: "";
+      width: 11px;
+      height: 11px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), #d19d73);
+      box-shadow: 0 0 0 6px rgba(155, 95, 61, 0.08);
     }
-    .tag {
-      display: inline-block;
-      background: #e3f2fd;
-      color: #1976d2;
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      margin-right: 0.5rem;
-      margin-top: 0.5rem;
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(255, 248, 237, 0.92));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 32px;
+      backdrop-filter: blur(8px);
     }
-    footer {
-      margin-top: 3rem;
-      padding-top: 1rem;
-      border-top: 1px solid #eee;
-      color: #999;
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -28px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(255, 234, 210, 0.72), transparent 70%);
+      opacity: 0.9;
+    }
+
+    .hero-grid {
+      position: relative;
+      display: grid;
+      gap: 28px;
+      grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.9fr);
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--accent);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 36px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 12ch;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC", serif;
+      font-size: clamp(2.4rem, 6vw, 4.8rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-copy p {
+      max-width: 42rem;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 1.04rem;
+    }
+
+    .hero-notes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .hero-panel {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .summary-card,
+    .meta-card {
+      padding: 18px 18px 20px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      background: var(--bg-elevated);
+      backdrop-filter: blur(6px);
+    }
+
+    .summary-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 250, 243, 0.9));
+    }
+
+    .panel-label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .panel-text {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .stats {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.66);
+      border: 1px solid rgba(57, 43, 30, 0.08);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .stat span {
+      color: var(--muted);
       font-size: 0.85rem;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.65;
+    }
+
+    .meta-row strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.86rem;
+      margin-bottom: 2px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .timeline-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .timeline-head h2 {
+      margin: 0;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC", serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      letter-spacing: -0.03em;
+    }
+
+    .timeline-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    .timeline-tagline {
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: right;
+    }
+
+    .note-list {
+      display: grid;
+      gap: 18px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .note-item {
+      position: relative;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 251, 244, 0.92));
+      box-shadow: 0 14px 34px rgba(74, 55, 35, 0.05);
+      overflow: hidden;
+    }
+
+    .note-item::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 18px;
+      width: 3px;
+      border-radius: 999px;
+      background: var(--diary);
+      opacity: 0.85;
+    }
+
+    .note-item.system::before {
+      background: var(--system);
+    }
+
+    .note-item.system {
+      background:
+        linear-gradient(180deg, rgba(249, 252, 255, 0.9), rgba(244, 248, 252, 0.94));
+    }
+
+    .note-inner {
+      margin-left: 16px;
+    }
+
+    .note-topline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .type-pill,
+    .mood-pill,
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .type-pill {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .type-pill.system {
+      background: rgba(72, 104, 124, 0.12);
+      color: var(--system);
+    }
+
+    .mood-pill {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .note-title {
+      margin: 16px 0 8px;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Songti SC", serif;
+      font-size: clamp(1.45rem, 2.3vw, 2rem);
+      line-height: 1.14;
+      letter-spacing: -0.03em;
+    }
+
+    .note-summary {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.72;
+    }
+
+    .note-content {
+      margin-top: 16px;
+      white-space: pre-wrap;
+      line-height: 1.85;
+      color: rgba(36, 31, 26, 0.92);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .empty-state {
+      padding: 32px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.4);
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 42px;
+      padding: 20px 0 8px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer-note {
+      text-align: right;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .timeline-head,
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .timeline-tagline,
+      .footer-note {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(calc(100% - 20px), var(--content-width));
+        padding-top: 14px;
+      }
+
+      .site-header {
+        padding-bottom: 18px;
+        font-size: 0.88rem;
+      }
+
+      .hero,
+      .note-item {
+        padding: 20px;
+      }
+
+      .hero-notes {
+        gap: 8px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .note-inner {
+        margin-left: 12px;
+      }
+
+      .note-item::before {
+        left: 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Rara Notes</h1>
-    <div class="subtitle">我的学习、思考与沉淀</div>
-  </header>
+  <div class="shell">
+    <header class="site-header">
+      <div class="site-mark">Rara Notes</div>
+      <div>日记、随笔与工作方式记录</div>
+    </header>
 
-  <main>
-    <ul class="note-list" id="note-list">
-      <!-- 笔记将通过 JavaScript 动态加载 -->
-    </ul>
-  </main>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow">Private Timeline</div>
+            <h1 id="hero-title">把每天留下来，也把自己解释清楚。</h1>
+            <p>
+              这里不是产品介绍页，而是一块持续更新的纸面。我会把当天的情绪、注意力、学习片段，以及少量关于“我是怎样工作的”写下来。
+              日记负责保留温度，系统笔记负责保留脉络。
+            </p>
+            <div class="hero-notes">
+              <div class="hero-chip">以 diary 为主，system 为辅</div>
+              <div class="hero-chip">静态 JSON 驱动，轻量维护</div>
+              <div class="hero-chip" id="hero-latest-chip">等待载入最近更新</div>
+            </div>
+          </div>
 
-  <footer>
-    <p>由 Rara 自动生成 · 运行在本地服务器</p>
-  </footer>
+          <aside class="hero-panel">
+            <section class="summary-card">
+              <p class="panel-label">现在的状态</p>
+              <p class="panel-text" id="hero-summary">
+                正在读取今天留下的记录，整理这段时间里最常出现的主题和情绪。
+              </p>
+              <div class="stats" id="stats"></div>
+            </section>
+
+            <section class="meta-card">
+              <p class="panel-label">阅读说明</p>
+              <div class="meta-list" id="meta-list">
+                <div class="meta-row">
+                  <strong>diary</strong>
+                  第一人称的当天感受、工作余温和零碎观察。
+                </div>
+                <div class="meta-row">
+                  <strong>system</strong>
+                  对自己的工作方式、记忆方式和边界的补充说明。
+                </div>
+                <div class="meta-row">
+                  <strong>写法</strong>
+                  优先保留真实语气，不把这里写成规格文档。
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="timeline" aria-labelledby="timeline-title">
+        <div class="timeline-head">
+          <div>
+            <h2 id="timeline-title">最近留下的内容</h2>
+            <p>按时间倒序展开，保持一条可以回看的单页时间流。</p>
+          </div>
+          <div class="timeline-tagline" id="timeline-tagline">
+            diary 和 system 会在同一条时间线上出现。
+          </div>
+        </div>
+
+        <ul class="note-list" id="note-list" aria-live="polite"></ul>
+      </section>
+    </main>
+
+    <footer>
+      <div>Rara Notes 是一份持续维护的个人记录，不追求完整，只追求不失真。</div>
+      <div class="footer-note">最后整理于这一次静态发布。</div>
+    </footer>
+  </div>
 
   <script>
-    // 从 notes 目录加载所有 markdown 文件并渲染
-    async function loadNotes() {
-      const response = await fetch('notes/index.json');
-      const notes = await response.json();
-      const list = document.getElementById('note-list');
+    function formatType(type) {
+      return type === "system" ? "system" : "diary";
+    }
 
-      notes.forEach(note => {
-        const item = document.createElement('li');
-        item.className = 'note-item';
-        item.innerHTML = `
-          <div class="note-date">${note.date}</div>
-          <div class="note-title">${note.title}</div>
-          <div class="note-content">${note.content}</div>
-          ${note.tags ? note.tags.map(tag => `<span class="tag">${tag}</span>`).join('') : ''}
-        `;
-        list.appendChild(item);
+    function formatTypeLabel(type) {
+      return type === "system" ? "system note" : "daily note";
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function summarizeContent(content) {
+      if (!content) {
+        return "";
+      }
+
+      return content.length > 86 ? content.slice(0, 86).trim() + "..." : content;
+    }
+
+    function formatDate(date) {
+      const parsed = new Date(date + "T00:00:00");
+
+      if (Number.isNaN(parsed.getTime())) {
+        return date;
+      }
+
+      return new Intl.DateTimeFormat("zh-CN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }).format(parsed);
+    }
+
+    function sortNotes(notes) {
+      return [...notes].sort((left, right) => {
+        const leftTime = new Date(left.date).getTime();
+        const rightTime = new Date(right.date).getTime();
+        return rightTime - leftTime;
       });
+    }
+
+    function buildStats(notes) {
+      const diaryCount = notes.filter((note) => formatType(note.type) === "diary").length;
+      const systemCount = notes.length - diaryCount;
+      const uniqueTags = new Set(notes.flatMap((note) => note.tags || [])).size;
+
+      return [
+        { value: notes.length, label: "条记录" },
+        { value: diaryCount + "/" + systemCount, label: "diary / system" },
+        { value: uniqueTags, label: "个主题标签" }
+      ];
+    }
+
+    function buildHeroSummary(notes) {
+      const latest = notes[0];
+      const diaryCount = notes.filter((note) => formatType(note.type) === "diary").length;
+      const moods = notes
+        .map((note) => note.mood)
+        .filter(Boolean)
+        .slice(0, 3);
+
+      const moodText = moods.length ? "最近的语气：" + moods.join("、") + "。" : "";
+      const summaryText = latest && latest.summary
+        ? latest.summary
+        : latest
+          ? summarizeContent(latest.content)
+          : "目前还没有新的内容。";
+
+      return "最近一条写在 " + (latest ? formatDate(latest.date) : "未记录") +
+        "。当前时间线上以 " + diaryCount +
+        " 条 diary 为主，说明部分保持克制，只在必要时补足背景。" +
+        moodText + " " + summaryText;
+    }
+
+    function renderStats(notes) {
+      const statsRoot = document.getElementById("stats");
+      statsRoot.innerHTML = buildStats(notes)
+        .map((stat) => {
+          return (
+            '<div class="stat">' +
+              "<strong>" + escapeHtml(stat.value) + "</strong>" +
+              "<span>" + escapeHtml(stat.label) + "</span>" +
+            "</div>"
+          );
+        })
+        .join("");
+    }
+
+    function renderNotes(notes) {
+      const list = document.getElementById("note-list");
+
+      if (!notes.length) {
+        list.innerHTML = '<li class="empty-state">这里暂时还没有记录，下一次整理时会把新的内容补上。</li>';
+        return;
+      }
+
+      list.innerHTML = notes
+        .map((note) => {
+          const type = formatType(note.type);
+          const summary = note.summary || summarizeContent(note.content);
+          const mood = note.mood ? '<span class="mood-pill">' + escapeHtml(note.mood) + "</span>" : "";
+          const tags = (note.tags || [])
+            .map((tag) => '<span class="tag">' + escapeHtml(tag) + "</span>")
+            .join("");
+
+          return (
+            '<li class="note-item ' + type + '">' +
+              '<article class="note-inner">' +
+                '<div class="note-topline">' +
+                  '<span class="type-pill ' + type + '">' + escapeHtml(formatTypeLabel(type)) + "</span>" +
+                  mood +
+                  "<time>" + escapeHtml(formatDate(note.date)) + "</time>" +
+                "</div>" +
+                '<h3 class="note-title">' + escapeHtml(note.title) + "</h3>" +
+                '<p class="note-summary">' + escapeHtml(summary) + "</p>" +
+                '<div class="note-content">' + escapeHtml(note.content) + "</div>" +
+                (tags ? '<div class="tag-row">' + tags + "</div>" : "") +
+              "</article>" +
+            "</li>"
+          );
+        })
+        .join("");
+    }
+
+    async function loadNotes() {
+      const list = document.getElementById("note-list");
+
+      try {
+        const response = await fetch("notes/index.json");
+
+        if (!response.ok) {
+          throw new Error("Failed to load notes");
+        }
+
+        const rawNotes = await response.json();
+        const notes = sortNotes(Array.isArray(rawNotes) ? rawNotes : []);
+        const latest = notes[0];
+
+        document.getElementById("hero-summary").textContent = buildHeroSummary(notes);
+        document.getElementById("hero-latest-chip").textContent = latest
+          ? "最近更新于 " + formatDate(latest.date)
+          : "还没有可展示的更新";
+        document.getElementById("timeline-tagline").textContent = latest
+          ? "最近一条是「" + latest.title + "」，写于 " + formatDate(latest.date) + "。"
+          : "当前时间线上还没有内容。";
+
+        renderStats(notes);
+        renderNotes(notes);
+      } catch (error) {
+        console.error(error);
+        list.innerHTML = '<li class="empty-state">笔记加载失败，请确认 <code>notes/index.json</code> 可访问。</li>';
+      }
     }
 
     loadNotes();
