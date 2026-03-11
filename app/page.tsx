@@ -1,17 +1,7 @@
+import NoteTimeline, { type Note } from "./components/NoteTimeline";
 import notes from "../notes/index.json";
 
 type NoteType = "diary" | "system";
-
-type Note = {
-  id: string;
-  date: string;
-  type?: NoteType;
-  title: string;
-  summary?: string;
-  content: string;
-  mood?: string;
-  tags?: string[];
-};
 
 const orderedNotes = [...(notes as Note[])].sort((left, right) => {
   return new Date(right.date).getTime() - new Date(left.date).getTime();
@@ -40,10 +30,6 @@ function fallbackSummary(note: Note) {
   }
 
   return note.content.length > 86 ? `${note.content.slice(0, 86).trim()}...` : note.content;
-}
-
-function typeLabel(type: NoteType) {
-  return type === "system" ? "system note" : "daily note";
 }
 
 function HeroSummary() {
@@ -129,88 +115,11 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="mt-9">
-          <div className="timeline-head">
-            <div>
-              <h2 className="timeline-title">最近留下的内容</h2>
-              <p className="timeline-copy">按时间倒序展开，保持一条可以回看的单页时间流。</p>
-            </div>
-            <p className="timeline-meta">
-              {latestNote
-                ? `最近一条是「${latestNote.title}」，写于 ${formatDate(latestNote.date)}。`
-                : "当前时间线上还没有内容。"}
-            </p>
-          </div>
-
-          <ul className="note-list">
-            {orderedNotes.map((note) => {
-              const type = note.type ?? "diary";
-              const summary = fallbackSummary(note);
-
-              return (
-                <li key={note.id} className={`note-card ${type === "system" ? "note-system" : "note-diary"}`}>
-                  {type === "diary" ? (
-                    <details className="note-detail">
-                      <summary className="note-toggle">
-                        <article className="note-inner">
-                          <div className="note-topline">
-                            <span className="type-pill">{typeLabel(type)}</span>
-                            {note.mood ? <span className="mood-pill">{note.mood}</span> : null}
-                            <time>{formatDate(note.date)}</time>
-                          </div>
-
-                          <div className="note-heading-row">
-                            <h3 className="note-title">{note.title}</h3>
-                            <span className="expand-pill" aria-hidden="true">
-                              展开
-                            </span>
-                          </div>
-                          <p className="note-summary">{summary}</p>
-                        </article>
-                      </summary>
-
-                      <div className="note-body note-inner">
-                        <div className="note-content">{note.content}</div>
-
-                        {note.tags?.length ? (
-                          <div className="tag-row">
-                            {note.tags.map((tag) => (
-                              <span key={tag} className="tag-pill">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                      </div>
-                    </details>
-                  ) : (
-                    <article className="note-inner">
-                      <div className="note-topline">
-                        <span className="type-pill type-system">{typeLabel(type)}</span>
-                        {note.mood ? <span className="mood-pill">{note.mood}</span> : null}
-                        <time>{formatDate(note.date)}</time>
-                      </div>
-
-                      <h3 className="note-title">{note.title}</h3>
-                      <p className="note-summary">{summary}</p>
-                      <div className="note-content">{note.content}</div>
-
-                      {note.tags?.length ? (
-                        <div className="tag-row">
-                          {note.tags.map((tag) => (
-                            <span key={tag} className="tag-pill">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      ) : null}
-                    </article>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+        <NoteTimeline
+          notes={orderedNotes}
+          latestTitle={latestNote?.title}
+          latestDateLabel={latestNote ? formatDate(latestNote.date) : undefined}
+        />
 
         <footer className="site-footer">
           <div>Rara Notes 是一份持续维护的个人记录，不追求完整，只追求不失真。</div>
