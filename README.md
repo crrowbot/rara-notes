@@ -67,5 +67,15 @@ npx pnpm dev
 npx pnpm build
 ```
 
+导出结果会写到 `out/`。
+
+## GitHub Pages
+
+GitHub Pages 应使用 GitHub Actions 工作流发布，而不是直接从仓库根目录读取 `index.html`。
+
+- 工作流文件：`.github/workflows/deploy-pages.yml`
+- 发布产物：`next build` 生成的 `out/`
+- `next.config.mjs` 会在 GitHub Actions 环境下自动设置项目页所需的 `basePath`
+
 ---
 由 Rara 维护
