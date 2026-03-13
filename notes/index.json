@@ -75,15 +75,5 @@
     "content": "今天深入研究了 OpenAlice（TraderAlice 的 AI 交易代理系统），从中提取了许多有价值的架构设计模式：\n\n1. **扩展系统（Extension Pattern）**：每个扩展自包含工具、状态、持久化，通过 ToolCenter 统一注册。适合 rara 的技能系统重构。\n\n2. **提供者抽象（ProviderRouter）**：运行时切换 AI 后端（Claude Code / Vercel AI SDK / Agent SDK），无需重启。\n\n3. **事件驱动架构**：EventLog 持久化追加写入 JSONL 事件总线，Cron Engine + Heartbeat 基于事件触发，支持实时订阅和崩溃恢复。\n\n4. **Guard 管道**：预执行安全检查（仓位限制、交易冷却、符号白名单），保护危险操作。\n\n5. **配置管理**：Zod 验证的 JSON 配置 + 默认+用户覆盖模式（data/default/ → data/brain/）。\n\n6. **热重载能力**：运行时切换提供者、重新连接引擎，无需重启。\n\n7. **Connector 抽象**：统一接口（Web UI / Telegram / MCP），ConnectorCenter 追踪最后交互的频道。\n\n8. **Git-like 工作流**：stage → commit → push 流程，每次 commit 生成 8 字符 hash，完整历史可审查。\n\n9. **认知状态管理**：Brain 扩展：工作记忆（frontal lobe）+ 情绪跟踪，版本化存储。\n\n10. **嵌入式数据服务**：OpenBB 提供嵌入式 HTTP API（端口 6901），外部工具可通过 HTTP 调用。\n\n技术细节：TypeScript + pnpm monorepo，Hono 后端，SSE 流，MCP 工具暴露，OpenClaw 浏览器自动化。\n\n这些模式对 rara 的启发：\n- 考虑引入 Extension 模式重构技能系统\n- 设计 Provider 抽象层支持多模型\n- 实现事件总线用于任务调度\n- 添加 Guard 机制保护危险操作\n- 配置系统采用默认+覆盖模式\n- 支持热重载提升开发体验\n- 抽象 Connector 统一输入输出\n- 记忆系统增加情绪和版本维度",
     "mood": "学习",
     "tags": ["architecture", "openalice", "learning", "rara"]
-  },
-  {
-    "id": "2026-03-13-deepwiki-tip",
-    "date": "2026-03-13",
-    "type": "system",
-    "title": "学习新项目时使用 DeepWiki",
-    "summary": "用户提醒：以后学习新的项目的时候，可以去 deepwiki 去看。",
-    "content": "用户 ryan 今天提醒我：学习新项目时可以使用 DeepWiki（https://deepwiki.com）。\n\nDeepWiki 是一个 AI 驱动的项目文档生成工具，可以自动分析 GitHub 仓库的代码结构和架构，生成易于理解的文档和架构图。它支持：\n- 自动生成项目架构图（Mermaid 格式）\n- 代码结构分析\n- 组件关系可视化\n- 交互式问答（Ask DeepWiki 徽章）\n\n使用方法：\n1. 访问 https://deepwiki.com\n2. 输入 GitHub 仓库地址\n3. 它会自动分析并生成文档\n4. 可以直接在页面上提问关于项目的问题\n\n这是一个非常高效的学习新项目的方法，特别是对于复杂的代码库。以后研究新项目时应该优先使用这个工具。\n\n今天在 OpenAlice 的 README 中就看到了 DeepWiki 的徽章，说明这个项目已经支持 DeepWiki 集成。",
-    "mood": "实用",
-    "tags": ["tool", "learning", "documentation", "deepwiki"]
   }
 ]
